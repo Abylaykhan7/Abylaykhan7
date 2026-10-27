@@ -1,19 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-import { VisitFormat } from '../data/catalog';
-
-export type PaymentMethod = 'kaspi' | 'card' | 'cash';
+export type PaymentMethod = 'kaspi' | 'card';
 
 export interface Booking {
   id: string;
   serviceId: string;
-  masterId: string;
+  specialistId: string;
   addOnIds: string[];
   dateKey: string;
   time: string;
-  format: VisitFormat;
   address: string;
+  occasion?: string;
   comment: string;
   payment: PaymentMethod;
   promoCode?: string;
@@ -39,16 +37,16 @@ interface AppStore extends AppState {
   ready: boolean;
   addBooking: (booking: Omit<Booking, 'id' | 'status' | 'createdAt'>) => Booking;
   cancelBooking: (id: string) => void;
-  toggleFavorite: (masterId: string) => void;
+  toggleFavorite: (specialistId: string) => void;
   updateProfile: (patch: Partial<Profile>) => void;
 }
 
-const STORAGE_KEY = 'beauty-app-state-v1';
+const STORAGE_KEY = 'aray-state-v1';
 
 const initialState: AppState = {
   bookings: [],
   favorites: [],
-  profile: { name: '', phone: '', city: 'Алматы', address: '' },
+  profile: { name: '', phone: '', city: 'Астана', address: '' },
 };
 
 const AppStoreContext = createContext<AppStore | null>(null);
@@ -73,7 +71,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   const addBooking = useCallback<AppStore['addBooking']>((data) => {
     const booking: Booking = {
       ...data,
-      id: `B${Date.now().toString(36).toUpperCase()}`,
+      id: `AR${Date.now().toString(36).toUpperCase()}`,
       status: 'upcoming',
       createdAt: Date.now(),
     };
@@ -88,12 +86,12 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
-  const toggleFavorite = useCallback((masterId: string) => {
+  const toggleFavorite = useCallback((specialistId: string) => {
     setState((s) => ({
       ...s,
-      favorites: s.favorites.includes(masterId)
-        ? s.favorites.filter((id) => id !== masterId)
-        : [...s.favorites, masterId],
+      favorites: s.favorites.includes(specialistId)
+        ? s.favorites.filter((id) => id !== specialistId)
+        : [...s.favorites, specialistId],
     }));
   }, []);
 

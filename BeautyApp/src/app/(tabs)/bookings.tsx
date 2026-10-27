@@ -1,11 +1,11 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, FlatList, Text, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 
-import { Avatar, Badge, Card, Chip, PrimaryButton } from '../../components/ui';
-import { getMaster, getService } from '../../data/catalog';
+import { Accent, Avatar, Button, Card, Chip, Heading } from '../../components/ui';
+import { getService, getSpecialist } from '../../data/catalog';
 import { Booking, useAppStore } from '../../store/AppStore';
-import { colors, spacing } from '../../theme';
+import { colors, fonts, radius, spacing } from '../../theme';
 import { formatDateLong, formatPrice } from '../../utils/format';
 
 const STATUS: Record<Booking['status'], { label: string; color: string }> = {
@@ -20,54 +20,59 @@ export default function BookingsScreen() {
   const list = bookings.filter((b) => (tab === 'upcoming' ? b.status === 'upcoming' : b.status !== 'upcoming'));
 
   const confirmCancel = (b: Booking) =>
-    Alert.alert('Отменить запись?', 'Бесплатная отмена — не позднее чем за 3 часа до визита.', [
+    Alert.alert('Отменить запись?', 'Бесплатная отмена — не позднее чем за 24 часа до визита.', [
       { text: 'Нет', style: 'cancel' },
       { text: 'Отменить', style: 'destructive', onPress: () => cancelBooking(b.id) },
     ]);
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ flexDirection: 'row', gap: spacing.sm, padding: spacing.lg }}>
+      <View style={{ flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.lg, paddingBottom: spacing.md }}>
         <Chip label="Предстоящие" active={tab === 'upcoming'} onPress={() => setTab('upcoming')} />
         <Chip label="История" active={tab === 'history'} onPress={() => setTab('history')} />
       </View>
       <FlatList
         data={list}
         keyExtractor={(b) => b.id}
-        contentContainerStyle={{ paddingHorizontal: spacing.lg, paddingBottom: 40, gap: spacing.md }}
+        contentContainerStyle={{ paddingHorizontal: spacing.lg, paddingBottom: 48, gap: spacing.md }}
         ListEmptyComponent={
-          <View style={{ alignItems: 'center', marginTop: 60, gap: spacing.md }}>
-            <Text style={{ fontSize: 48 }}>🗓️</Text>
-            <Text style={{ color: colors.textMuted }}>Здесь пока пусто</Text>
-            <PrimaryButton title="Выбрать услугу" onPress={() => router.push('/catalog')} style={{ paddingHorizontal: 30 }} />
+          <View style={{ alignItems: 'center', marginTop: 60, gap: spacing.md, paddingHorizontal: spacing.xl }}>
+            <Heading size={30} style={{ textAlign: 'center' }}>
+              Пока <Accent>пусто</Accent>
+            </Heading>
+            <Text style={st.muted}>Запишитесь на образ или съёмку — запись появится здесь.</Text>
+            <Button title="Выбрать пакет" onPress={() => router.push('/catalog')} style={{ alignSelf: 'stretch' }} />
           </View>
         }
         renderItem={({ item }) => {
           const service = getService(item.serviceId);
-          const master = getMaster(item.masterId);
-          if (!service || !master) return null;
+          const person = getSpecialist(item.specialistId);
+          if (!service || !person) return null;
           return (
-            <Card style={{ gap: spacing.sm }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={{ color: colors.textMuted }}>№ {item.id}</Text>
-                <Badge label={STATUS[item.status].label} color={STATUS[item.status].color} />
+            <Card style={{ gap: spacing.md }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text style={st.muted}>№ {item.id}</Text>
+                <View style={[st.badge, { borderColor: STATUS[item.status].color }]}>
+                  <Text style={[st.badgeText, { color: STATUS[item.status].color }]}>{STATUS[item.status].label}</Text>
+                </View>
               </View>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>{service.title}</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-                <Avatar master={master} size={32} />
-                <Text style={{ color: colors.text }}>{master.name}</Text>
+              <Heading size={26}>{service.title}</Heading>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+                <Avatar person={person} size={36} />
+                <View>
+                  <Text style={st.strong}>{person.name}</Text>
+                  <Text style={st.muted}>{person.title}</Text>
+                </View>
               </View>
-              <Text style={{ color: colors.text }}>
-                📅 {formatDateLong(item.dateKey)}, {item.time}
-              </Text>
-              <Text style={{ color: colors.text }}>
-                📍 {item.format === 'home' ? `Выезд: ${item.address}` : 'В студии мастера'}
-              </Text>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>{formatPrice(item.total)}</Text>
+              <View style={st.infoBox}>
+                <Text style={st.info}>{formatDateLong(item.dateKey)}, {item.time}</Text>
+                <Text style={st.info}>{item.address}</Text>
+              </View>
+              <Text style={[st.strong, { fontSize: 18 }]}>{formatPrice(item.total)}</Text>
               {item.status === 'upcoming' ? (
-                <PrimaryButton title="Отменить запись" variant="outline" onPress={() => confirmCancel(item)} />
+                <Button title="Отменить запись" variant="outline" onPress={() => confirmCancel(item)} />
               ) : (
-                <PrimaryButton title="Записаться снова" variant="outline" onPress={() => router.push(`/service/${item.serviceId}`)} />
+                <Button title="Записаться снова" variant="outline" onPress={() => router.push(`/booking/${item.serviceId}`)} />
               )}
             </Card>
           );
@@ -76,3 +81,12 @@ export default function BookingsScreen() {
     </View>
   );
 }
+
+const st = StyleSheet.create({
+  muted: { fontFamily: fonts.sans, fontSize: 13, color: colors.textMuted, textAlign: 'center' },
+  strong: { fontFamily: fonts.sansBold, fontSize: 14, color: colors.ink },
+  badge: { borderWidth: 1, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3 },
+  badgeText: { fontFamily: fonts.sansMedium, fontSize: 11 },
+  infoBox: { backgroundColor: colors.cream, borderRadius: radius.sm, padding: spacing.md, gap: 4 },
+  info: { fontFamily: fonts.sans, fontSize: 14, color: colors.ink },
+});

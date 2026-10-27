@@ -1,25 +1,14 @@
-// Каталог услуг. Цены в тенге (₸) — ориентир по рынку Алматы/Астаны,
-// перед запуском сверьте с актуальным прайсом.
+// Каталог Aray: только макияж, причёски, фото- и видеосъёмка, бэкстейдж.
+// Цены в тенге (₸), выезд по городу включён. Базовые тарифы выровнены по рынку Астаны
+// (макияж + укладка ~35 000 ₸, со съёмкой сборов ~65 000 ₸) — перед запуском сверьте с прайсом.
 
-export type CategoryId =
-  | 'nails'
-  | 'pedicure'
-  | 'hair'
-  | 'barber'
-  | 'brows'
-  | 'makeup'
-  | 'cosmetology'
-  | 'massage'
-  | 'depilation'
-  | 'photo'
-  | 'video'
-  | 'events';
+export type CategoryId = 'packages' | 'makeup' | 'hair' | 'photo' | 'video' | 'backstage';
 
 export interface Category {
   id: CategoryId;
   title: string;
-  emoji: string;
-  color: string;
+  subtitle: string;
+  icon: 'sparkles-outline' | 'color-palette-outline' | 'cut-outline' | 'camera-outline' | 'videocam-outline' | 'film-outline';
 }
 
 export interface AddOn {
@@ -28,199 +17,247 @@ export interface AddOn {
   price: number;
 }
 
+export type Tier = 'base' | 'star' | 'icon' | 'bride';
+
 export interface Service {
   id: string;
   categoryId: CategoryId;
   title: string;
-  description: string;
+  summary: string;
+  includes: string[];
   price: number;
-  /** true — цена «от», итог уточняет мастер */
+  /** true — цена «от», итог согласуем после заявки */
   priceFrom?: boolean;
   durationMin: number;
+  /** Кто приезжает: подпись в карточке */
+  team: string;
   addOns?: AddOn[];
+  tier?: Tier;
   popular?: boolean;
-  isNew?: boolean;
 }
 
-export type MasterLevel = 'master' | 'top';
+export type Role = 'makeup' | 'hair' | 'photo' | 'video';
 
-export interface Master {
+export interface Specialist {
   id: string;
   name: string;
-  categories: CategoryId[];
-  level: MasterLevel;
+  roles: Role[];
+  title: string;
   rating: number;
   reviews: number;
   experienceYears: number;
   about: string;
-  avatarColor: string;
+  tone: string;
 }
 
-export type VisitFormat = 'home' | 'studio';
-
-export const VISIT_FEE = 2000;
-
-export const LEVEL_INFO: Record<MasterLevel, { title: string; multiplier: number }> = {
-  master: { title: 'Мастер', multiplier: 1 },
-  top: { title: 'Топ-мастер', multiplier: 1.25 },
+/** Кто ведёт заказ в каждой категории */
+export const LEAD_ROLE: Record<CategoryId, Role> = {
+  packages: 'makeup',
+  makeup: 'makeup',
+  hair: 'hair',
+  photo: 'photo',
+  video: 'video',
+  backstage: 'video',
 };
 
 export const PROMO_CODES: Record<string, number> = {
-  GLOW10: 0.1,
+  ARAY10: 0.1,
   FIRST15: 0.15,
 };
 
-export const CITIES = ['Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе'];
+/** Номер поддержки в формате wa.me — замените на свой */
+export const WHATSAPP = '77000000000';
+
+export const CITIES = ['Астана', 'Алматы', 'Шымкент'];
 
 export const categories: Category[] = [
-  { id: 'nails', title: 'Маникюр', emoji: '💅', color: '#FDE7EF' },
-  { id: 'pedicure', title: 'Педикюр', emoji: '🦶', color: '#FCEFE3' },
-  { id: 'hair', title: 'Волосы', emoji: '💇‍♀️', color: '#EDE7FE' },
-  { id: 'barber', title: 'Барбер', emoji: '💈', color: '#E3F0FC' },
-  { id: 'brows', title: 'Брови и ресницы', emoji: '👁️', color: '#FFF3D6' },
-  { id: 'makeup', title: 'Макияж', emoji: '💄', color: '#FDE3E3' },
-  { id: 'cosmetology', title: 'Косметолог', emoji: '🧴', color: '#E2F6EC' },
-  { id: 'massage', title: 'Массаж и SPA', emoji: '💆‍♀️', color: '#E6F4F7' },
-  { id: 'depilation', title: 'Депиляция', emoji: '✨', color: '#F4E9FB' },
-  { id: 'photo', title: 'Фотосессия', emoji: '📸', color: '#E7ECFE' },
-  { id: 'video', title: 'Видеосъёмка', emoji: '🎬', color: '#EAF7E2' },
-  { id: 'events', title: 'Образ под ключ', emoji: '👰', color: '#FFE9F3' },
+  { id: 'packages', title: 'Пакеты', subtitle: 'Образ и съёмка под ключ', icon: 'sparkles-outline' },
+  { id: 'makeup', title: 'Макияж', subtitle: 'Дневной, вечерний, свадебный', icon: 'color-palette-outline' },
+  { id: 'hair', title: 'Причёски', subtitle: 'Укладки и собранные образы', icon: 'cut-outline' },
+  { id: 'photo', title: 'Фотосъёмка', subtitle: 'Портреты, love story, события', icon: 'camera-outline' },
+  { id: 'video', title: 'Видео и Reels', subtitle: 'Ролики, клипы, фильмы', icon: 'videocam-outline' },
+  { id: 'backstage', title: 'Бэкстейдж', subtitle: 'Съёмка ваших сборов', icon: 'film-outline' },
 ];
 
-const nailAddOns: AddOn[] = [
-  { id: 'design', title: 'Дизайн (до 4 ногтей)', price: 1500 },
-  { id: 'removal', title: 'Снятие старого покрытия', price: 1000 },
-  { id: 'strength', title: 'Укрепление гелем', price: 2000 },
+const beautyAddOns: AddOn[] = [
+  { id: 'lashes', title: 'Ресницы-пучки', price: 3000 },
+  { id: 'early', title: 'Ранний выезд (до 7:00)', price: 5000 },
+  { id: 'trial', title: 'Пробный образ заранее', price: 15000 },
+  { id: 'touchup', title: 'Мастер остаётся на коррекцию (1 ч)', price: 10000 },
 ];
 
-const photoAddOns: AddOn[] = [
-  { id: 'studio', title: 'Аренда студии (1 час)', price: 10000 },
+const shootAddOns: AddOn[] = [
   { id: 'extra-hour', title: 'Дополнительный час съёмки', price: 15000 },
-  { id: 'retouch', title: 'Ретушь +10 фото', price: 8000 },
-  { id: 'makeup', title: 'Визажист на съёмку', price: 12000 },
-  { id: 'express', title: 'Экспресс-готовность (48 ч)', price: 7000 },
+  { id: 'studio', title: 'Аренда студии (1 ч)', price: 12000 },
+  { id: 'retouch', title: 'Ещё 10 фото в ретуши', price: 8000 },
+  { id: 'express', title: 'Экспресс-готовность за 24 ч', price: 10000 },
 ];
 
 const videoAddOns: AddOn[] = [
-  { id: 'extra-reel', title: 'Дополнительный Reels', price: 10000 },
-  { id: 'drone', title: 'Съёмка с дрона', price: 20000 },
-  { id: 'express', title: 'Экспресс-монтаж (48 ч)', price: 10000 },
+  { id: 'extra-reel', title: 'Дополнительный Reels', price: 12000 },
+  { id: 'drone', title: 'Съёмка с дрона', price: 25000 },
+  { id: 'express', title: 'Экспресс-монтаж за 24 ч', price: 10000 },
 ];
 
 export const services: Service[] = [
-  // Маникюр
-  { id: 'mani-classic', categoryId: 'nails', title: 'Классический маникюр', description: 'Обработка кутикулы, придание формы, покрытие лаком по желанию.', price: 5000, durationMin: 60, addOns: nailAddOns },
-  { id: 'mani-gel', categoryId: 'nails', title: 'Маникюр + гель-лак', description: 'Комбинированный маникюр и однотонное покрытие гель-лаком, держится до 3 недель.', price: 8000, durationMin: 90, addOns: nailAddOns, popular: true },
-  { id: 'mani-ext', categoryId: 'nails', title: 'Наращивание ногтей', description: 'Наращивание гелем на формы, любая длина, покрытие включено.', price: 14000, durationMin: 150, addOns: nailAddOns },
-  { id: 'mani-correction', categoryId: 'nails', title: 'Коррекция наращивания', description: 'Коррекция отросших ногтей и новое покрытие.', price: 11000, durationMin: 120, addOns: nailAddOns },
-  { id: 'mani-men', categoryId: 'nails', title: 'Мужской маникюр', description: 'Гигиенический маникюр, полировка ногтевой пластины.', price: 5000, durationMin: 45 },
-
-  // Педикюр
-  { id: 'pedi-classic', categoryId: 'pedicure', title: 'Педикюр классический', description: 'Обработка стоп и пальцев, без покрытия.', price: 8000, durationMin: 60 },
-  { id: 'pedi-gel', categoryId: 'pedicure', title: 'Педикюр + гель-лак', description: 'Аппаратный педикюр с покрытием гель-лаком.', price: 11000, durationMin: 90, popular: true },
-  { id: 'pedi-smart', categoryId: 'pedicure', title: 'SMART-педикюр', description: 'Бережная обработка стоп дисками, подходит при трещинах.', price: 13000, durationMin: 90 },
-  { id: 'combo-mp', categoryId: 'pedicure', title: 'Маникюр + педикюр с покрытием', description: 'Два мастера одновременно или один мастер последовательно.', price: 17000, durationMin: 150, popular: true },
-
-  // Волосы
-  { id: 'hair-cut', categoryId: 'hair', title: 'Женская стрижка', description: 'Стрижка любой сложности, мытьё и укладка феном.', price: 7000, durationMin: 60 },
-  { id: 'hair-style', categoryId: 'hair', title: 'Укладка', description: 'Локоны, волны, объём — для праздника или фотосессии.', price: 6000, durationMin: 45 },
-  { id: 'hair-updo', categoryId: 'hair', title: 'Вечерняя причёска', description: 'Собранная причёска на мероприятие.', price: 12000, durationMin: 75 },
-  { id: 'hair-color', categoryId: 'hair', title: 'Окрашивание в один тон', description: 'Окрашивание корней или по длине профессиональными красителями.', price: 18000, priceFrom: true, durationMin: 120 },
-  { id: 'hair-airtouch', categoryId: 'hair', title: 'Сложное окрашивание (AirTouch, шатуш)', description: 'Мелирование, тонирование, уход. Цена зависит от длины и густоты.', price: 45000, priceFrom: true, durationMin: 240 },
-  { id: 'hair-keratin', categoryId: 'hair', title: 'Кератиновое выпрямление', description: 'Гладкость и блеск до 4 месяцев.', price: 25000, priceFrom: true, durationMin: 180 },
-
-  // Барбер
-  { id: 'barber-cut', categoryId: 'barber', title: 'Мужская стрижка', description: 'Машинка + ножницы, мытьё головы, укладка.', price: 5000, durationMin: 45 },
-  { id: 'barber-beard', categoryId: 'barber', title: 'Оформление бороды', description: 'Моделирование бороды, горячее полотенце.', price: 3500, durationMin: 30 },
-  { id: 'barber-combo', categoryId: 'barber', title: 'Стрижка + борода', description: 'Комплекс со скидкой.', price: 7500, durationMin: 75, popular: true },
-  { id: 'barber-kids', categoryId: 'barber', title: 'Детская стрижка', description: 'Для детей до 12 лет.', price: 4000, durationMin: 30 },
-
-  // Брови и ресницы
-  { id: 'brows-shape', categoryId: 'brows', title: 'Коррекция и окрашивание бровей', description: 'Архитектура бровей, окрашивание краской или хной.', price: 5000, durationMin: 45 },
-  { id: 'brows-lami', categoryId: 'brows', title: 'Ламинирование бровей', description: 'Фиксация формы, окрашивание и уход.', price: 8000, durationMin: 60, popular: true },
-  { id: 'lash-lami', categoryId: 'brows', title: 'Ламинирование ресниц', description: 'Изгиб, окрашивание и ботокс ресниц.', price: 9000, durationMin: 60 },
-  { id: 'lash-classic', categoryId: 'brows', title: 'Наращивание ресниц (классика)', description: 'Поресничное наращивание, эффект естественных ресниц.', price: 10000, durationMin: 120 },
-  { id: 'lash-volume', categoryId: 'brows', title: 'Наращивание ресниц 2D–3D', description: 'Объёмное наращивание.', price: 13000, durationMin: 150 },
+  // Пакеты
+  {
+    id: 'pkg-base',
+    categoryId: 'packages',
+    tier: 'base',
+    title: 'Aray Base',
+    summary: 'Безупречный макияж и укладка — у вас дома, в отеле или апартаментах.',
+    includes: ['Подготовка кожи и макияж премиальной косметикой', 'Причёска или укладка Dyson', 'Ресницы-пучки в подарок'],
+    price: 35000,
+    durationMin: 90,
+    team: 'Визажист-стилист',
+    addOns: beautyAddOns.slice(1),
+    popular: true,
+  },
+  {
+    id: 'pkg-star',
+    categoryId: 'packages',
+    tier: 'star',
+    title: 'Aray Star',
+    summary: 'Сборы как у звезды: мы собираем вас, мобилограф снимает каждый момент.',
+    includes: [
+      'Всё из Aray Base',
+      'Мобилограф со светом снимает сборы',
+      'Готовый Reels о вашем образе за 48 ч',
+      'Халат, напиток и патчи — сервис уровня звезды',
+    ],
+    price: 65000,
+    durationMin: 90,
+    team: 'Визажист + мобилограф',
+    addOns: [...beautyAddOns.slice(1), videoAddOns[0]],
+    popular: true,
+  },
+  {
+    id: 'pkg-icon',
+    categoryId: 'packages',
+    tier: 'icon',
+    title: 'Aray Icon',
+    summary: 'Образ, бэкстейдж и фотосессия после сборов — контент на месяц вперёд.',
+    includes: [
+      'Всё из Aray Star',
+      'Фотограф: 1 ч съёмки после сборов',
+      '20 фото в авторской ретуши',
+      '2 Reels: бэкстейдж и финальный образ',
+    ],
+    price: 120000,
+    durationMin: 180,
+    team: 'Визажист + фотограф + мобилограф',
+    addOns: [...beautyAddOns.slice(1), ...shootAddOns.slice(0, 2), videoAddOns[0]],
+  },
+  {
+    id: 'pkg-bride',
+    categoryId: 'packages',
+    tier: 'bride',
+    title: 'Утро невесты',
+    summary: 'Свадьба или қыз ұзату: пробный образ, сборы, фото и видео бэкстейджа.',
+    includes: [
+      'Пробный образ за 1–2 недели',
+      'Свадебный макияж и причёска',
+      'Фотограф и видеограф на сборах (3 ч)',
+      'Клип «утро невесты» 1–2 мин + 60 фото',
+    ],
+    price: 190000,
+    priceFrom: true,
+    durationMin: 180,
+    team: 'Визажист + стилист + фотограф + видеограф',
+    addOns: [beautyAddOns[1], beautyAddOns[3], videoAddOns[1]],
+  },
 
   // Макияж
-  { id: 'makeup-day', categoryId: 'makeup', title: 'Дневной макияж', description: 'Лёгкий естественный образ.', price: 10000, durationMin: 60 },
-  { id: 'makeup-evening', categoryId: 'makeup', title: 'Вечерний макияж', description: 'Яркий стойкий макияж для мероприятия, ресницы в подарок.', price: 14000, durationMin: 75, popular: true },
-  { id: 'makeup-photo', categoryId: 'makeup', title: 'Макияж для фотосессии', description: 'Фотостойкий макияж с учётом света и камеры.', price: 15000, durationMin: 75, isNew: true },
-  { id: 'makeup-bridal', categoryId: 'makeup', title: 'Свадебный макияж', description: 'Пробный образ + макияж в день свадьбы.', price: 35000, durationMin: 120 },
+  { id: 'mk-day', categoryId: 'makeup', title: 'Дневной макияж', summary: 'Свежий естественный образ на каждый день, деловую встречу или фото.', includes: ['Подготовка кожи', 'Стойкий тон и лёгкие акценты'], price: 20000, durationMin: 60, team: 'Визажист', addOns: beautyAddOns },
+  { id: 'mk-evening', categoryId: 'makeup', title: 'Вечерний макияж', summary: 'Выразительный стойкий макияж на той, день рождения или вечеринку.', includes: ['Подготовка кожи', 'Скульптурирование и стрелки', 'Ресницы-пучки'], price: 25000, durationMin: 75, team: 'Визажист', addOns: beautyAddOns.slice(1), popular: true },
+  { id: 'mk-camera', categoryId: 'makeup', title: 'Макияж для съёмки', summary: 'Фотостойкий макияж с учётом света и камеры — для фотосессии и Reels.', includes: ['Матирующий стойкий тон', 'Коррекция под свет'], price: 25000, durationMin: 75, team: 'Визажист', addOns: beautyAddOns },
+  { id: 'mk-bride', categoryId: 'makeup', title: 'Свадебный макияж', summary: 'Для свадьбы и қыз ұзату: держится весь день, красиво в кадре.', includes: ['Пробный образ', 'Водостойкие текстуры', 'Ресницы-пучки'], price: 45000, durationMin: 90, team: 'Визажист', addOns: [beautyAddOns[1], beautyAddOns[3]] },
+  { id: 'mk-express', categoryId: 'makeup', title: 'Экспресс-макияж', summary: 'Быстро освежить образ за 40 минут.', includes: ['Тон, брови, ресницы, губы'], price: 15000, durationMin: 40, team: 'Визажист', addOns: beautyAddOns.slice(0, 2) },
 
-  // Косметология
-  { id: 'cosm-clean', categoryId: 'cosmetology', title: 'Чистка лица комбинированная', description: 'Ультразвуковая + механическая чистка, маска.', price: 15000, durationMin: 90 },
-  { id: 'cosm-peel', categoryId: 'cosmetology', title: 'Пилинг лица', description: 'Кислотный пилинг по типу кожи.', price: 12000, durationMin: 60 },
-  { id: 'cosm-care', categoryId: 'cosmetology', title: 'Уходовая процедура', description: 'Увлажнение, альгинатная маска, массаж лица.', price: 14000, durationMin: 75 },
+  // Причёски
+  { id: 'hr-style', categoryId: 'hair', title: 'Укладка Dyson', summary: 'Объём, гладкость или лёгкие волны.', includes: ['Термозащита', 'Укладка феном и стайлером'], price: 15000, durationMin: 45, team: 'Стилист по волосам', addOns: [beautyAddOns[1]] },
+  { id: 'hr-waves', categoryId: 'hair', title: 'Голливудская волна', summary: 'Классическая блестящая волна для вечернего выхода.', includes: ['Фиксация на весь вечер'], price: 20000, durationMin: 60, team: 'Стилист по волосам', addOns: [beautyAddOns[1]] },
+  { id: 'hr-updo', categoryId: 'hair', title: 'Вечерняя причёска', summary: 'Собранный или полусобранный образ на мероприятие.', includes: ['Укладка', 'Сборка и фиксация'], price: 20000, durationMin: 60, team: 'Стилист по волосам', addOns: [beautyAddOns[1]], popular: true },
+  { id: 'hr-bride', categoryId: 'hair', title: 'Свадебная причёска', summary: 'С фатой, сәукеле или украшениями — держится весь день.', includes: ['Пробная причёска', 'Работа с аксессуарами'], price: 30000, durationMin: 90, team: 'Стилист по волосам', addOns: [beautyAddOns[1], beautyAddOns[3]] },
 
-  // Массаж и SPA
-  { id: 'massage-classic', categoryId: 'massage', title: 'Классический массаж (60 мин)', description: 'Массаж всего тела.', price: 12000, durationMin: 60, popular: true },
-  { id: 'massage-relax', categoryId: 'massage', title: 'Релакс-массаж (90 мин)', description: 'Медленный расслабляющий массаж с аромамаслами.', price: 17000, durationMin: 90 },
-  { id: 'massage-anticell', categoryId: 'massage', title: 'Антицеллюлитный массаж', description: 'Курс рекомендован от 10 сеансов.', price: 13000, durationMin: 60 },
-  { id: 'massage-back', categoryId: 'massage', title: 'Массаж спины и шеи', description: 'Снимает напряжение после работы за компьютером.', price: 8000, durationMin: 40 },
-  { id: 'massage-face', categoryId: 'massage', title: 'Массаж лица', description: 'Скульптурный/буккальный массаж.', price: 9000, durationMin: 45 },
+  // Фото
+  { id: 'ph-after', categoryId: 'photo', title: 'Фото после сборов', summary: 'Короткая съёмка готового образа у вас дома или рядом.', includes: ['30 минут съёмки', '15 фото в ретуши', 'Все исходники'], price: 20000, durationMin: 30, team: 'Фотограф', addOns: shootAddOns },
+  { id: 'ph-portrait', categoryId: 'photo', title: 'Портретная фотосессия', summary: 'Час съёмки в городе, дома или в студии.', includes: ['1 час съёмки', '25 фото в ретуши', 'Помощь с позированием'], price: 30000, durationMin: 60, team: 'Фотограф', addOns: shootAddOns, popular: true },
+  { id: 'ph-love', categoryId: 'photo', title: 'Love story', summary: 'Фотосессия для пары: прогулка, эмоции, живые кадры.', includes: ['1,5 часа съёмки', '35 фото в ретуши'], price: 45000, durationMin: 90, team: 'Фотограф', addOns: shootAddOns },
+  { id: 'ph-event', categoryId: 'photo', title: 'Фото на тое или празднике', summary: 'Репортаж с мероприятия: гости, детали, главные моменты.', includes: ['3 часа съёмки', '150+ фото в цветокоррекции'], price: 90000, durationMin: 180, team: 'Фотограф', addOns: shootAddOns },
+  { id: 'ph-wedding', categoryId: 'photo', title: 'Свадебная фотосъёмка', summary: 'Полный день: сборы, прогулка, банкет.', includes: ['До 10 часов съёмки', '400+ фото', '80 фото в ретуши'], price: 220000, priceFrom: true, durationMin: 600, team: 'Фотограф', addOns: shootAddOns },
 
-  // Депиляция
-  { id: 'dep-arms', categoryId: 'depilation', title: 'Шугаринг подмышек', description: 'Сахарная паста, уход после процедуры.', price: 3000, durationMin: 20 },
-  { id: 'dep-legs', categoryId: 'depilation', title: 'Шугаринг ног полностью', description: '', price: 9000, durationMin: 60 },
-  { id: 'dep-bikini', categoryId: 'depilation', title: 'Глубокое бикини', description: '', price: 8000, durationMin: 45 },
-  { id: 'dep-complex', categoryId: 'depilation', title: 'Комплекс: ноги + бикини + подмышки', description: 'Самый выгодный вариант.', price: 16000, durationMin: 120, popular: true },
+  // Видео
+  { id: 'vd-reel', categoryId: 'video', title: 'Reels с вашего образа', summary: 'Один вертикальный ролик до 30 секунд с монтажом и музыкой.', includes: ['Съёмка до 1 часа', 'Монтаж и цветокоррекция'], price: 20000, durationMin: 60, team: 'Мобилограф', addOns: videoAddOns },
+  { id: 'vd-reels3', categoryId: 'video', title: 'Пакет из 3 Reels', summary: 'Контент для блога или бизнеса: три ролика за одну съёмку.', includes: ['Съёмка до 2 часов', '3 ролика до 30 секунд', 'Сценарий-план'], price: 50000, durationMin: 120, team: 'Мобилограф', addOns: videoAddOns, popular: true },
+  { id: 'vd-event', categoryId: 'video', title: 'Видео мероприятия', summary: 'Той, юбилей, день рождения: клип и полная запись.', includes: ['До 4 часов съёмки', 'Клип 2–3 мин', 'Вертикальная версия для соцсетей'], price: 100000, priceFrom: true, durationMin: 240, team: 'Видеограф', addOns: videoAddOns },
+  { id: 'vd-wedding', categoryId: 'video', title: 'Свадебный фильм', summary: 'Полный день съёмки, клип и фильм о вашей свадьбе.', includes: ['До 10 часов съёмки', 'Клип 3–5 мин', 'Фильм 20–40 мин'], price: 250000, priceFrom: true, durationMin: 600, team: 'Видеограф', addOns: videoAddOns },
 
-  // Фотосессия
-  { id: 'photo-individual', categoryId: 'photo', title: 'Индивидуальная фотосессия (1 час)', description: 'Съёмка на улице или в студии, 15 фото в ретуши, все исходники.', price: 25000, durationMin: 60, addOns: photoAddOns, popular: true, isNew: true },
-  { id: 'photo-instagram', categoryId: 'photo', title: 'Контент для Instagram', description: '2 часа, 2–3 образа, 30 фото в ретуши для блога или бизнеса.', price: 40000, durationMin: 120, addOns: photoAddOns, isNew: true },
-  { id: 'photo-lovestory', categoryId: 'photo', title: 'Love Story', description: 'Фотосессия для пары, 1,5 часа, 25 фото в ретуши.', price: 35000, durationMin: 90, addOns: photoAddOns, isNew: true },
-  { id: 'photo-family', categoryId: 'photo', title: 'Семейная / детская фотосессия', description: '1,5 часа, до 6 человек, 30 фото в ретуши.', price: 40000, durationMin: 90, addOns: photoAddOns, isNew: true },
-  { id: 'photo-business', categoryId: 'photo', title: 'Деловой портрет', description: 'Портреты для резюме, LinkedIn, сайта компании. 10 фото в ретуши.', price: 25000, durationMin: 60, addOns: photoAddOns, isNew: true },
-  { id: 'photo-pregnancy', categoryId: 'photo', title: 'Фотосессия беременности', description: 'Студия, платья в аренду, 20 фото в ретуши.', price: 45000, durationMin: 120, addOns: photoAddOns, isNew: true },
-  { id: 'photo-wedding', categoryId: 'photo', title: 'Свадебная фотосъёмка (полный день)', description: 'Сборы, прогулка, банкет. 300+ фото, 60 в ретуши, фотокнига.', price: 200000, priceFrom: true, durationMin: 600, addOns: photoAddOns, isNew: true },
-
-  // Видеосъёмка
-  { id: 'video-reels', categoryId: 'video', title: 'Reels / TikTok (3 ролика)', description: 'Съёмка и монтаж трёх вертикальных роликов до 30 секунд.', price: 30000, durationMin: 120, addOns: videoAddOns, isNew: true },
-  { id: 'video-event', categoryId: 'video', title: 'Видеосъёмка мероприятия', description: 'Той, день рождения, корпоратив — до 4 часов, клип 3–5 минут.', price: 80000, priceFrom: true, durationMin: 240, addOns: videoAddOns, isNew: true },
-  { id: 'video-wedding', categoryId: 'video', title: 'Свадебный клип', description: 'Полный день, клип 5–7 минут + полный фильм.', price: 180000, priceFrom: true, durationMin: 600, addOns: videoAddOns, isNew: true },
-
-  // Образ под ключ
-  { id: 'look-photo', categoryId: 'events', title: 'Фотосессия + макияж + укладка', description: 'Визажист и фотограф в одном заказе. 1 час съёмки, 15 фото в ретуши.', price: 45000, durationMin: 180, addOns: photoAddOns, popular: true, isNew: true },
-  { id: 'look-party', categoryId: 'events', title: 'Образ на мероприятие', description: 'Вечерний макияж + причёска.', price: 24000, durationMin: 120 },
-  { id: 'look-bride', categoryId: 'events', title: 'Образ невесты (кыз узату / свадьба)', description: 'Пробный образ, макияж, причёска, выезд в день торжества.', price: 60000, priceFrom: true, durationMin: 180 },
+  // Бэкстейдж
+  { id: 'bs-getready', categoryId: 'backstage', title: 'Бэкстейдж сборов', summary: 'Мобилограф снимает, как вас собирают: от первой кисти до финального образа.', includes: ['Свет и съёмка всех сборов', 'Reels за 48 ч', 'Лучшие кадры-скриншоты'], price: 30000, durationMin: 90, team: 'Мобилограф', addOns: videoAddOns, popular: true },
+  { id: 'bs-photoshoot', categoryId: 'backstage', title: 'Бэкстейдж фотосессии', summary: 'Закулисье вашей съёмки — живые моменты для сторис и Reels.', includes: ['Съёмка до 2 часов', '1 Reels + 10 коротких видео'], price: 30000, durationMin: 120, team: 'Мобилограф', addOns: videoAddOns },
+  { id: 'bs-bride', categoryId: 'backstage', title: 'Бэкстейдж утра невесты', summary: 'Фото и видео сборов невесты, мамы и подружек.', includes: ['3 часа съёмки', '40 фото', 'Клип 1 мин + Reels'], price: 90000, durationMin: 180, team: 'Фотограф + мобилограф', addOns: videoAddOns },
 ];
 
-export const masters: Master[] = [
-  { id: 'm1', name: 'Айгерим С.', categories: ['nails', 'pedicure'], level: 'top', rating: 4.9, reviews: 412, experienceYears: 7, about: 'Аппаратный маникюр, сложные дизайны, наращивание.', avatarColor: '#F7B6CB' },
-  { id: 'm2', name: 'Динара К.', categories: ['nails', 'pedicure', 'depilation'], level: 'master', rating: 4.8, reviews: 187, experienceYears: 4, about: 'Аккуратный маникюр и SMART-педикюр.', avatarColor: '#C9B8F9' },
-  { id: 'm3', name: 'Мадина Т.', categories: ['hair', 'events'], level: 'top', rating: 4.9, reviews: 298, experienceYears: 9, about: 'Колорист, сложные окрашивания, свадебные причёски.', avatarColor: '#FFD59E' },
-  { id: 'm4', name: 'Арман Б.', categories: ['barber'], level: 'master', rating: 4.7, reviews: 156, experienceYears: 5, about: 'Мужские стрижки, фейды, бороды.', avatarColor: '#A9D2F5' },
-  { id: 'm5', name: 'Жанель А.', categories: ['brows', 'makeup', 'events'], level: 'top', rating: 5.0, reviews: 341, experienceYears: 6, about: 'Визажист, бровист, ламинирование.', avatarColor: '#F9C2C2' },
-  { id: 'm6', name: 'Сауле М.', categories: ['cosmetology', 'massage'], level: 'master', rating: 4.8, reviews: 120, experienceYears: 8, about: 'Медицинское образование, массаж лица и тела.', avatarColor: '#B7E4C7' },
-  { id: 'm7', name: 'Ерлан Ж.', categories: ['massage'], level: 'master', rating: 4.8, reviews: 98, experienceYears: 10, about: 'Классический и спортивный массаж.', avatarColor: '#BFE3EA' },
-  { id: 'm8', name: 'Алия Н.', categories: ['photo', 'events'], level: 'top', rating: 4.9, reviews: 233, experienceYears: 8, about: 'Портретный и fashion-фотограф, Love Story, свадьбы.', avatarColor: '#C7D0FB' },
-  { id: 'm9', name: 'Тимур Р.', categories: ['photo', 'video'], level: 'master', rating: 4.8, reviews: 141, experienceYears: 5, about: 'Фото и видео для Instagram, Reels, мероприятия.', avatarColor: '#CDEBC0' },
-  { id: 'm10', name: 'Камила О.', categories: ['makeup', 'hair', 'brows'], level: 'master', rating: 4.7, reviews: 76, experienceYears: 3, about: 'Дневной и вечерний макияж, укладки.', avatarColor: '#F6C8E6' },
-  { id: 'm11', name: 'Асель Д.', categories: ['depilation', 'cosmetology'], level: 'master', rating: 4.8, reviews: 164, experienceYears: 6, about: 'Шугаринг, чистки лица, пилинги.', avatarColor: '#E6CCF5' },
-  { id: 'm12', name: 'Нурлан Е.', categories: ['video', 'photo'], level: 'top', rating: 4.9, reviews: 109, experienceYears: 11, about: 'Свадебные фильмы, съёмка с дрона.', avatarColor: '#D6E8B5' },
+export const specialists: Specialist[] = [
+  { id: 's1', name: 'Жанель Ахметова', roles: ['makeup', 'hair'], title: 'Ведущий визажист-стилист', rating: 5.0, reviews: 341, experienceYears: 8, about: 'Свадебные и вечерние образы, работа с камерой и светом.', tone: '#C9A27E' },
+  { id: 's2', name: 'Мадина Тлеубаева', roles: ['makeup'], title: 'Визажист', rating: 4.9, reviews: 212, experienceYears: 6, about: 'Нюдовый и skin-focused макияж, фотостойкие техники.', tone: '#B98B7A' },
+  { id: 's3', name: 'Айгерим Сапарова', roles: ['hair', 'makeup'], title: 'Стилист по волосам', rating: 4.9, reviews: 187, experienceYears: 7, about: 'Голливудская волна, собранные причёски, работа с сәукеле.', tone: '#A88B6D' },
+  { id: 's4', name: 'Дана Ержанова', roles: ['makeup', 'hair'], title: 'Визажист-стилист', rating: 4.8, reviews: 129, experienceYears: 4, about: 'Лёгкие дневные образы и укладки Dyson.', tone: '#C7A992' },
+  { id: 's5', name: 'Алия Нурланова', roles: ['photo'], title: 'Фотограф', rating: 4.9, reviews: 233, experienceYears: 9, about: 'Портрет, fashion, свадьбы. Мягкий кинематографичный цвет.', tone: '#8E7663' },
+  { id: 's6', name: 'Тимур Рахимов', roles: ['photo', 'video'], title: 'Фото- и видеограф', rating: 4.8, reviews: 141, experienceYears: 6, about: 'Love story, тои, контент для брендов.', tone: '#7F6A5B' },
+  { id: 's7', name: 'Камила Оспанова', roles: ['video'], title: 'Мобилограф', rating: 4.9, reviews: 176, experienceYears: 4, about: 'Бэкстейджи сборов и Reels, которые набирают охваты.', tone: '#B0907A' },
+  { id: 's8', name: 'Нурлан Есенов', roles: ['video', 'photo'], title: 'Видеограф', rating: 4.9, reviews: 109, experienceYears: 11, about: 'Свадебные фильмы, съёмка с дрона, клипы утра невесты.', tone: '#6F5D50' },
+];
+
+export interface Occasion {
+  id: string;
+  title: string;
+  serviceId: string;
+}
+
+export const occasions: Occasion[] = [
+  { id: 'wedding', title: 'Свадьба', serviceId: 'pkg-bride' },
+  { id: 'kyz', title: 'Қыз ұзату', serviceId: 'pkg-bride' },
+  { id: 'toi', title: 'Той и юбилей', serviceId: 'pkg-star' },
+  { id: 'bday', title: 'День рождения', serviceId: 'pkg-star' },
+  { id: 'grad', title: 'Выпускной', serviceId: 'pkg-base' },
+  { id: 'photoshoot', title: 'Фотосессия', serviceId: 'pkg-icon' },
+  { id: 'reels', title: 'Контент и Reels', serviceId: 'vd-reels3' },
+  { id: 'business', title: 'Деловая встреча', serviceId: 'mk-day' },
+  { id: 'self', title: 'Для себя', serviceId: 'pkg-base' },
+];
+
+export const faq = [
+  { q: 'Что подготовить к приезду мастера?', a: 'Место у окна с дневным светом, стул и розетку рядом. Кожа должна быть чистой, без крема — подготовку сделает визажист.' },
+  { q: 'Чем Base отличается от Star?', a: 'В Base приезжает визажист-стилист: макияж и причёска. В Star вместе с ним приезжает мобилограф — ставит свет, снимает все сборы и через 48 часов присылает готовый Reels.' },
+  { q: 'Можно записать нескольких человек?', a: 'Одна запись — на одного человека. Если собираетесь с мамой или подругами, оформите несколько записей на одно время или напишите нам — подберём команду.' },
+  { q: 'Где проходит съёмка?', a: 'Там, где удобно вам: дома, в отеле, ресторане или на локации. Студию можно добавить к фотосессии отдельной опцией.' },
+  { q: 'Как оплатить?', a: 'Через Kaspi или картой после подтверждения записи. Для свадебных пакетов — предоплата 30%.' },
+  { q: 'Как перенести или отменить?', a: 'В разделе «Записи» или в WhatsApp. Бесплатно — не позднее чем за 24 часа.' },
 ];
 
 export const getCategory = (id: string) => categories.find((c) => c.id === id);
 export const getService = (id: string) => services.find((s) => s.id === id);
-export const getMaster = (id: string) => masters.find((m) => m.id === id);
+export const getSpecialist = (id: string) => specialists.find((m) => m.id === id);
 export const servicesByCategory = (id: string) => services.filter((s) => s.categoryId === id);
-export const mastersForCategory = (id: string) => masters.filter((m) => m.categories.includes(id as CategoryId));
-
-export function priceForLevel(service: Service, level: MasterLevel): number {
-  return Math.round((service.price * LEVEL_INFO[level].multiplier) / 500) * 500;
-}
-
-export function priceForMaster(service: Service, master?: Master): number {
-  return priceForLevel(service, master?.level ?? 'master');
-}
+export const specialistsForService = (service: Service) =>
+  specialists.filter((m) => m.roles.includes(LEAD_ROLE[service.categoryId]));
+export const packages = services.filter((s) => s.categoryId === 'packages');
 
 /** Детерминированно «занятые» слоты, пока нет бэкенда */
-export function isSlotBusy(masterId: string, dateKey: string, time: string): boolean {
-  const seed = `${masterId}${dateKey}${time}`;
+export function isSlotBusy(specialistId: string, dateKey: string, time: string): boolean {
+  const seed = `${specialistId}${dateKey}${time}`;
   let hash = 0;
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
   return hash % 4 === 0;
 }
 
-export const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+export const TIME_SLOTS = [
+  '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '11:00',
+  '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00',
+];
+
+/** Запись не раньше чем за 3 часа */
+export const MIN_LEAD_HOURS = 3;

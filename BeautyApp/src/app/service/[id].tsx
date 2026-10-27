@@ -1,73 +1,108 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Card, MasterRow, PrimaryButton, SectionTitle } from '../../components/ui';
-import { getCategory, getService, LEVEL_INFO, mastersForCategory, priceForLevel, priceForMaster, VISIT_FEE } from '../../data/catalog';
-import { colors, spacing } from '../../theme';
+import { Button, Card, Eyebrow, Heading, Meta, Price, SpecialistRow } from '../../components/ui';
+import { getCategory, getService, specialistsForService } from '../../data/catalog';
+import { colors, fonts, gradients, radius, spacing } from '../../theme';
 import { formatDuration, formatPrice } from '../../utils/format';
 
 export default function ServiceScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, occasion } = useLocalSearchParams<{ id: string; occasion?: string }>();
   const service = getService(id);
   if (!service) return <Text style={{ padding: spacing.lg }}>Услуга не найдена</Text>;
   const category = getCategory(service.categoryId);
-  const serviceMasters = mastersForCategory(service.categoryId);
-  const from = service.priceFrom ? 'от ' : '';
+  const team = specialistsForService(service);
+  const book = (specialistId?: string) =>
+    router.push({ pathname: '/booking/[serviceId]', params: { serviceId: service.id, ...(specialistId ? { specialistId } : {}), ...(occasion ? { occasion } : {}) } });
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
-      <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: 24 }}>
-        <Text style={{ fontSize: 44 }}>{category?.emoji}</Text>
-        <Text style={{ fontSize: 24, fontWeight: '800', color: colors.text, marginTop: spacing.sm }}>{service.title}</Text>
-        <Text style={{ color: colors.textMuted, marginTop: 4 }}>
-          <Ionicons name="time-outline" size={14} /> {formatDuration(service.durationMin)}
-        </Text>
-        {service.description ? (
-          <Text style={{ color: colors.text, fontSize: 15, lineHeight: 22, marginTop: spacing.md }}>{service.description}</Text>
-        ) : null}
+      <ScrollView contentContainerStyle={{ paddingBottom: spacing.xl }}>
+        <LinearGradient colors={gradients.ink} style={st.hero}>
+          <Text style={st.heroMono}>{service.title.charAt(0)}</Text>
+          <Eyebrow dark>{occasion ? `Для повода · ${occasion}` : category?.title}</Eyebrow>
+          <Heading dark size={40} style={{ marginTop: spacing.sm }}>
+            {service.title}
+          </Heading>
+          <Text style={st.heroText}>{service.summary}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.lg, marginTop: spacing.lg }}>
+            <Price service={service} dark size={24} />
+            <Meta icon="time-outline" label={formatDuration(service.durationMin)} dark />
+          </View>
+          <View style={{ marginTop: spacing.sm }}>
+            <Meta icon="people-outline" label={service.team} dark />
+          </View>
+        </LinearGradient>
 
-        <SectionTitle title="Стоимость" />
-        <Card style={{ gap: spacing.sm }}>
-          <PriceLine label={LEVEL_INFO.master.title} value={`${from}${formatPrice(service.price)}`} />
-          <PriceLine label={LEVEL_INFO.top.title} value={`${from}${formatPrice(priceForLevel(service, 'top'))}`} />
-          <PriceLine label="Выезд на дом" value={`+${formatPrice(VISIT_FEE)}`} muted />
-        </Card>
+        <View style={{ padding: spacing.lg, gap: spacing.lg }}>
+          <Card>
+            <Eyebrow>Что входит</Eyebrow>
+            {service.includes.map((t) => (
+              <View key={t} style={st.line}>
+                <Ionicons name="checkmark" size={18} color={colors.rose} />
+                <Text style={st.lineText}>{t}</Text>
+              </View>
+            ))}
+            <View style={st.line}>
+              <Ionicons name="car-outline" size={18} color={colors.rose} />
+              <Text style={st.lineText}>Выезд по городу включён</Text>
+            </View>
+          </Card>
 
-        {service.addOns?.length ? (
-          <>
-            <SectionTitle title="Дополнительно" />
-            <Card style={{ gap: spacing.sm }}>
+          {service.addOns?.length ? (
+            <Card>
+              <Eyebrow>Можно добавить</Eyebrow>
               {service.addOns.map((a) => (
-                <PriceLine key={a.id} label={a.title} value={`+${formatPrice(a.price)}`} />
+                <View key={a.id} style={[st.line, { justifyContent: 'space-between' }]}>
+                  <Text style={st.lineText}>{a.title}</Text>
+                  <Text style={st.addOnPrice}>+{formatPrice(a.price)}</Text>
+                </View>
               ))}
             </Card>
-          </>
-        ) : null}
+          ) : null}
 
-        <SectionTitle title="Мастера" />
-        {serviceMasters.map((m) => (
-          <MasterRow
-            key={m.id}
-            master={m}
-            onPress={() => router.push({ pathname: '/booking/[serviceId]', params: { serviceId: service.id, masterId: m.id } })}
-            right={<Text style={{ fontWeight: '700', color: colors.text }}>{from}{formatPrice(priceForMaster(service, m))}</Text>}
-          />
-        ))}
+          <View>
+            <Eyebrow>Кто приедет</Eyebrow>
+            <View style={{ marginTop: spacing.md }}>
+              {team.map((p) => (
+                <SpecialistRow key={p.id} person={p} onPress={() => book(p.id)} right={<Ionicons name="arrow-forward" size={18} color={colors.ink} />} />
+              ))}
+            </View>
+          </View>
+        </View>
       </ScrollView>
-      <View style={{ padding: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.surface }}>
-        <PrimaryButton title="Записаться" onPress={() => router.push(`/booking/${service.id}`)} />
+      <View style={st.footer}>
+        <View style={{ flex: 1 }}>
+          <Text style={st.footerLabel}>Итого от</Text>
+          <Text style={st.footerPrice}>{formatPrice(service.price)}</Text>
+        </View>
+        <Button title="Выбрать время" onPress={() => book()} style={{ flex: 1.4 }} />
       </View>
     </SafeAreaView>
   );
 }
 
-function PriceLine({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
-  return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: spacing.md }}>
-      <Text style={{ color: muted ? colors.textMuted : colors.text, flex: 1 }}>{label}</Text>
-      <Text style={{ fontWeight: '700', color: muted ? colors.textMuted : colors.text }}>{value}</Text>
-    </View>
-  );
-}
+const st = StyleSheet.create({
+  hero: { padding: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.xxl, overflow: 'hidden' },
+  heroMono: { position: 'absolute', right: -10, top: -50, fontFamily: fonts.serifItalic, fontSize: 260, color: 'rgba(212,180,140,0.08)' },
+  heroText: { fontFamily: fonts.sans, fontSize: 15, lineHeight: 22, color: colors.textOnDarkMuted, marginTop: spacing.md },
+  line: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md, marginTop: spacing.md },
+  lineText: { flex: 1, fontFamily: fonts.sans, fontSize: 15, lineHeight: 21, color: colors.ink },
+  addOnPrice: { fontFamily: fonts.sansBold, fontSize: 14, color: colors.ink },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.lg,
+    padding: spacing.lg,
+    backgroundColor: colors.surface,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    borderTopLeftRadius: radius.lg,
+    borderTopRightRadius: radius.lg,
+  },
+  footerLabel: { fontFamily: fonts.sans, fontSize: 12, color: colors.textMuted },
+  footerPrice: { fontFamily: fonts.sansBold, fontSize: 20, color: colors.ink },
+});
