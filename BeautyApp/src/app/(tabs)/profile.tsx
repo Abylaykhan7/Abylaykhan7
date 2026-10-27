@@ -29,7 +29,7 @@ export default function ProfileScreen() {
       </View>
 
       <Card dark style={{ gap: 6 }}>
-        <Eyebrow dark>Aray Club</Eyebrow>
+        <Eyebrow dark>AiYa Club</Eyebrow>
         <Heading dark size={26}>
           {done} {done === 1 ? 'образ' : 'образов'} с нами
         </Heading>

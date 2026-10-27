@@ -13,7 +13,7 @@ type IconName = ComponentProps<typeof Ionicons>['name'];
 export function Logo({ size = 28, dark = false }: { size?: number; dark?: boolean }) {
   return (
     <Text style={{ fontFamily: fonts.serif, fontSize: size, color: dark ? colors.textOnDark : colors.ink, letterSpacing: -0.5 }}>
-      Ar<Text style={{ fontFamily: fonts.serifItalic, color: dark ? colors.gold : colors.rose }}>ay</Text>
+      Ai<Text style={{ fontFamily: fonts.serifItalic, color: dark ? colors.gold : colors.rose }}>Ya</Text>
     </Text>
   );
 }

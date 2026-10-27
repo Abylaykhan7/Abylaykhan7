@@ -41,7 +41,7 @@ interface AppStore extends AppState {
   updateProfile: (patch: Partial<Profile>) => void;
 }
 
-const STORAGE_KEY = 'aray-state-v1';
+const STORAGE_KEY = 'aiya-state-v1';
 
 const initialState: AppState = {
   bookings: [],
@@ -71,7 +71,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   const addBooking = useCallback<AppStore['addBooking']>((data) => {
     const booking: Booking = {
       ...data,
-      id: `AR${Date.now().toString(36).toUpperCase()}`,
+      id: `AY${Date.now().toString(36).toUpperCase()}`,
       status: 'upcoming',
       createdAt: Date.now(),
     };

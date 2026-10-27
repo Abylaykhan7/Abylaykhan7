@@ -1,4 +1,4 @@
-// Каталог Aray: только макияж, причёски, фото- и видеосъёмка, бэкстейдж.
+// Каталог AiYa: только макияж, причёски, фото- и видеосъёмка, бэкстейдж.
 // Цены в тенге (₸), выезд по городу включён. Базовые тарифы выровнены по рынку Астаны
 // (макияж + укладка ~35 000 ₸, со съёмкой сборов ~65 000 ₸) — перед запуском сверьте с прайсом.
 
@@ -61,7 +61,7 @@ export const LEAD_ROLE: Record<CategoryId, Role> = {
 };
 
 export const PROMO_CODES: Record<string, number> = {
-  ARAY10: 0.1,
+  AIYA10: 0.1,
   FIRST15: 0.15,
 };
 
@@ -105,7 +105,7 @@ export const services: Service[] = [
     id: 'pkg-base',
     categoryId: 'packages',
     tier: 'base',
-    title: 'Aray Base',
+    title: 'AiYa Base',
     summary: 'Безупречный макияж и укладка — у вас дома, в отеле или апартаментах.',
     includes: ['Подготовка кожи и макияж премиальной косметикой', 'Причёска или укладка Dyson', 'Ресницы-пучки в подарок'],
     price: 35000,
@@ -118,10 +118,10 @@ export const services: Service[] = [
     id: 'pkg-star',
     categoryId: 'packages',
     tier: 'star',
-    title: 'Aray Star',
+    title: 'AiYa Star',
     summary: 'Сборы как у звезды: мы собираем вас, мобилограф снимает каждый момент.',
     includes: [
-      'Всё из Aray Base',
+      'Всё из AiYa Base',
       'Мобилограф со светом снимает сборы',
       'Готовый Reels о вашем образе за 48 ч',
       'Халат, напиток и патчи — сервис уровня звезды',
@@ -136,10 +136,10 @@ export const services: Service[] = [
     id: 'pkg-icon',
     categoryId: 'packages',
     tier: 'icon',
-    title: 'Aray Icon',
+    title: 'AiYa Icon',
     summary: 'Образ, бэкстейдж и фотосессия после сборов — контент на месяц вперёд.',
     includes: [
-      'Всё из Aray Star',
+      'Всё из AiYa Star',
       'Фотограф: 1 ч съёмки после сборов',
       '20 фото в авторской ретуши',
       '2 Reels: бэкстейдж и финальный образ',

@@ -162,7 +162,7 @@ export default function HomeScreen() {
       {/* Команда */}
       <View style={{ paddingTop: spacing.xxl }}>
         <View style={{ paddingHorizontal: spacing.lg }}>
-          <SectionHeader eyebrow="Команда" title="Мастера" accent="Aray" action="Все" onAction={() => router.push('/team')} />
+          <SectionHeader eyebrow="Команда" title="Мастера" accent="AiYa" action="Все" onAction={() => router.push('/team')} />
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: spacing.md, paddingHorizontal: spacing.lg }}>
           {specialists.slice(0, 6).map((p) => (

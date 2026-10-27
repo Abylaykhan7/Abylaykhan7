@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "Aray",
-    "slug": "aray",
+    "name": "AiYa",
+    "slug": "aiya",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "kz.aray.app"
+      "bundleIdentifier": "kz.aiya.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +18,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "kz.aray.app"
+      "package": "kz.aiya.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -35,6 +35,6 @@
         }
       ]
     ],
-    "scheme": "aray"
+    "scheme": "aiya"
   }
 }
