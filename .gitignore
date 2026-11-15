@@ -99,3 +99,8 @@ Secrets.plist
 
 # API keys
 APIKeys.swift
+
+# Impeccable skill runtime (engine binary + caches)
+.claude/skills/impeccable/scripts/bin/
+.impeccable/
+**/.impeccable/
