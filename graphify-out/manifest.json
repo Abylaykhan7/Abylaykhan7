@@ -1,0 +1,212 @@
+{
+  ".mcp.json": {
+    "mtime": 1794739796.1768749,
+    "seen": 1794776203.4649622,
+    "ast_hash": "d623040758a89f7b64b7d22da0c96a63",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/LiverpoolFanApp.swift": {
+    "mtime": 1794581952.7045383,
+    "seen": 1794776203.4649713,
+    "ast_hash": "b76842c7606c8e5df4cd8a10e57838de",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Managers/AuthenticationManager.swift": {
+    "mtime": 1794581952.7045383,
+    "seen": 1794776203.4649756,
+    "ast_hash": "ae9981500933919e927057a5a379b980",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Managers/BulletinManager.swift": {
+    "mtime": 1794581952.704619,
+    "seen": 1794776203.4649782,
+    "ast_hash": "10f17d3a541b2b41a914ec8ef29b159b",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Managers/ChatManager.swift": {
+    "mtime": 1794581952.704619,
+    "seen": 1794776203.4649804,
+    "ast_hash": "a1658c6b3f4e8541cdfb107855352f3f",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Managers/MatchManager.swift": {
+    "mtime": 1794581952.704619,
+    "seen": 1794776203.4649823,
+    "ast_hash": "4ec564e5b0b8a08368c277d90f75e163",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Managers/ShopManager.swift": {
+    "mtime": 1794581952.704619,
+    "seen": 1794776203.4649844,
+    "ast_hash": "c5db3d8bcb20258c6e967024d1403c2b",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Managers/SubscriptionManager.swift": {
+    "mtime": 1794581952.704619,
+    "seen": 1794776203.464986,
+    "ast_hash": "eb9558a130f9827d83915d1c089b1010",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Models/BulletinPost.swift": {
+    "mtime": 1794581952.704619,
+    "seen": 1794776203.4650133,
+    "ast_hash": "79d1ae85b7ad8efe44b4901431da9d4c",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Models/ChatMessage.swift": {
+    "mtime": 1794581952.7048988,
+    "seen": 1794776203.4650164,
+    "ast_hash": "c5981cb7ddc1890d36b7d437045d29bb",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Models/Match.swift": {
+    "mtime": 1794581952.7048988,
+    "seen": 1794776203.4650183,
+    "ast_hash": "7353d7838d819921965ff120361764ef",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Models/Shop.swift": {
+    "mtime": 1794581952.7048988,
+    "seen": 1794776203.4650214,
+    "ast_hash": "147c4944617eebda0093ff90bff0ac8f",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Models/User.swift": {
+    "mtime": 1794581952.7048988,
+    "seen": 1794776203.4650233,
+    "ast_hash": "f76ea966683930e807f685e94148259e",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/Auth/LoginView.swift": {
+    "mtime": 1794581952.7050328,
+    "seen": 1794776203.465025,
+    "ast_hash": "30b2b24d4ee8cf6717c3c7473d19438f",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/Auth/RegistrationView.swift": {
+    "mtime": 1794581952.7050803,
+    "seen": 1794776203.4650266,
+    "ast_hash": "b73f1bb8c0e4b0569e475f9a7ae00033",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/BulletinBoard/BulletinBoardView.swift": {
+    "mtime": 1794581952.7050803,
+    "seen": 1794776203.4650285,
+    "ast_hash": "42a7a6f2fdb7f46d68a8441a2bdde668",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/BulletinBoard/GatheringDetailView.swift": {
+    "mtime": 1794581952.7052321,
+    "seen": 1794776203.4650304,
+    "ast_hash": "8ab71e7f59b65f6b76a0ac61f15b8ef7",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/BulletinBoard/NewPostView.swift": {
+    "mtime": 1794581952.7052321,
+    "seen": 1794776203.4650323,
+    "ast_hash": "a796e7587b07a49971827b900e72dc06",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/BulletinBoard/PostDetailView.swift": {
+    "mtime": 1794581952.7052321,
+    "seen": 1794776203.4650342,
+    "ast_hash": "64e00724a060213a0913f080b3112848",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/MainTabView.swift": {
+    "mtime": 1794581952.7052321,
+    "seen": 1794776203.465036,
+    "ast_hash": "2140a67196ff0704b9b0fd6f70c1cbfb",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/Matches/MatchDetailView.swift": {
+    "mtime": 1794581952.7052321,
+    "seen": 1794776203.4650378,
+    "ast_hash": "21bb39af21ce72cbc9d275f46c71c855",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/Matches/MatchesView.swift": {
+    "mtime": 1794581952.705524,
+    "seen": 1794776203.4650393,
+    "ast_hash": "e9a40bcaa9592fe34d6b834232e76ac7",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/Messenger/MessengerView.swift": {
+    "mtime": 1794581952.705524,
+    "seen": 1794776203.4650416,
+    "ast_hash": "723219c240c87fe203188af40f58e769",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/Profile/ProfileView.swift": {
+    "mtime": 1794581952.705524,
+    "seen": 1794776203.4650435,
+    "ast_hash": "aa43fab2e49deefd33e7f6464b79071e",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/Shops/ProductDetailView.swift": {
+    "mtime": 1794581952.705524,
+    "seen": 1794776203.4650455,
+    "ast_hash": "9e6d466c2d9463b04e913fc9b89580ff",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/Shops/ShopDetailView.swift": {
+    "mtime": 1794581952.7057292,
+    "seen": 1794776203.4650474,
+    "ast_hash": "6d8431c18622b76949537f77b0c890ca",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/Shops/ShopsView.swift": {
+    "mtime": 1794581952.7057292,
+    "seen": 1794776203.465049,
+    "ast_hash": "ef696ab32c85d8fdce6d09dc64561a0a",
+    "semantic_hash": ""
+  },
+  "LiverpoolFanApp/Views/Subscription/SubscriptionView.swift": {
+    "mtime": 1794581952.7057292,
+    "seen": 1794776203.465051,
+    "ast_hash": "9fc18aa032b28c2e90bdbc5b6fee6e70",
+    "semantic_hash": ""
+  },
+  "Package.swift": {
+    "mtime": 1794581952.7057292,
+    "seen": 1794776203.4650524,
+    "ast_hash": "58f99009da4612c87cb75ce977f00be0",
+    "semantic_hash": ""
+  },
+  "API_DOCUMENTATION.md": {
+    "mtime": 1794581952.703055,
+    "seen": 1794776203.465054,
+    "ast_hash": "9ac29fc616bf8a0676c76f9c6da383c6",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1794776124.6339684,
+    "seen": 1794776203.465056,
+    "ast_hash": "dfe5fa7939121e96d61b54077cc9ab84",
+    "semantic_hash": ""
+  },
+  "PROJECT_SUMMARY.md": {
+    "mtime": 1794581952.7057292,
+    "seen": 1794776203.4650576,
+    "ast_hash": "8429c961ac1484fdecf14957ed4c060a",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1794581952.7057292,
+    "seen": 1794776203.465059,
+    "ast_hash": "a0cb916c6f0c16ee5b4827c19d2a8cb9",
+    "semantic_hash": ""
+  },
+  "SETUP_GUIDE.md": {
+    "mtime": 1794581952.7057292,
+    "seen": 1794776203.465061,
+    "ast_hash": "fbecece125ae3897ff9b9e4025a034fc",
+    "semantic_hash": ""
+  },
+  "TECHNICAL_SPECS.md": {
+    "mtime": 1794581952.7057292,
+    "seen": 1794776203.4650629,
+    "ast_hash": "1f2c1cc8dbdd27f45fe0681c71fc0e19",
+    "semantic_hash": ""
+  }
+}

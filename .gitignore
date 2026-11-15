@@ -104,3 +104,6 @@ APIKeys.swift
 .claude/skills/impeccable/scripts/bin/
 .impeccable/
 **/.impeccable/
+
+# graphify cache
+graphify-out/cache/
